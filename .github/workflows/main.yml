@@ -26,7 +26,9 @@ jobs:
           ls
           cat count.txt
           commit_count=$(grep -oP '(?<=commit count is : )\d+' count.txt)
+          echo $commit_count
           new_commit_count=$((commit_count + 50))
+          echo $new_commit_count
           sed -i "s/my commit count is : [0-9]\+/my commit count is: $new_commit_count/" count.txt
           cat count.txt
           git add .
