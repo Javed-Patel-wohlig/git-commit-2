@@ -1,0 +1,40 @@
+name: wohlig devops test
+
+on:
+  push:
+    branches:
+      - 'uat'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.TOKEN100 }}
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout test-commits
+        uses: actions/checkout@v3
+      - name: checkout test-gitops
+        run: git clone https://Javed-Patel-wohlig:${{ secrets.TOKEN100 }}@github.com/Javed-Patel-wohlig/test-gitops.git
+      - name: configure git
+        run: |
+          git config --global user.email "javed.patel@wohlig.com"
+          git config --global user.name "Javed-Patel-wohlig"
+      - name: update file
+        run: |
+          cd test-gitops
+
+          count=$(grep -oP 'my commit count is : \K\d+' count.txt)
+          
+          echo "hello I'm devops" > count.txt
+          echo "my commit count is : $((count + 50))" > count.txt 
+          echo "thank you" > count.txt
+          
+          git add .
+          git commit -m "update new image"
+ 
+          git status
+ 
+          git push --set-upstream origin main
+ 
+          git status
