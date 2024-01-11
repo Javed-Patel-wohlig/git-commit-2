@@ -23,8 +23,9 @@ jobs:
       - name: Update count.txt
         run: |
           cd test-gitops
-          commit_count=$(($(grep -oP 'my commit count is: \K\d+' count.txt) + 50))
-          sed -i "s/my commit count is : [0-9]\+/my commit count is: $commit_count/" count.txt
+          commit_count=$(grep -oP '(?<=commit count is : )\d+' count.txt)
+          new_commit_count=$((commit_count + 50))
+          sed -i "s/my commit count is : [0-9]\+/my commit count is: $new_commit_count/" count.txt
           git add .
           git commit -m "update new count"
           git push origin main
