@@ -20,19 +20,22 @@ jobs:
         run: |
           git config --global user.email "javed.patel@wohlig.com"
           git config --global user.name "Javed-Patel-wohlig"
-      - name: update file
+      - name: Update count.txt
         run: |
           cd test-gitops
-
+          if [[ ! -f count.txt ]]; then
+            echo "Error: count.txt not found."
+            exit 1
+          fi
           count=$(grep -oP 'my commit count is : \K\d+' count.txt)
-
           echo "hello I'm devops" >> count.txt
-          echo "my commit count is : $((count + 50))" >> count.txt 
+          echo "my commit count is : $((count + 50))" >> count.txt
           echo "thank you" >> count.txt
-          
           git add .
           git commit -m "update new count"
- 
-          git push --set-upstream origin main
- 
-          git status
+      - name: Push changes (if any)
+        run: |
+          cd test-gitops
+          if [[ $(git status --porcelain | grep -c count.txt) -gt 0 ]]; then
+            git push
+          fi
